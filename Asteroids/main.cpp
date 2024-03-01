@@ -3,19 +3,43 @@
 #include "Bullet.h"
 #include "Asteroids.h"
 #include <math.h>
+#include <random>
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HIGHT 800
 #define PLAYER_SPEED 5.0f
 #define MAX_BULLET 10
 #define PI 3.14159265358979323846f
+#define METEORS_SPEED       2
+#define MAX_BIG_METEORS     4
+#define MAX_MEDIUM_METEORS  8
+#define MAX_SMALL_METEORS   16
+
+
+static bool gameOver = false;
+static bool pause = false;
+static bool victory = false;
+
+static int midMeteorsCount = 0;
+static int smallMeteorsCount = 0;
+static int destroyedMeteorsCount = 0;
+
+bool checkCollision(sf::FloatRect object1, const sf::FloatRect object2)
+{
+    return object1.intersects(object2);
+}
 
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HIGHT), "LHG Code Exercise");
     sf::Clock GameClock;
 
-
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> randPosX(0, SCREEN_WIDTH);
+    std::uniform_int_distribution<> randPosY(0, SCREEN_HIGHT);
+    std::uniform_int_distribution<> randVelX(-METEORS_SPEED, METEORS_SPEED);
+    std::uniform_int_distribution<> randVelY(-METEORS_SPEED, METEORS_SPEED);
    //loading the assets
     sf::Texture PlayerTexture;
     sf::Texture AsteroidTexture;
@@ -35,13 +59,22 @@ int main()
     for (int i = 0; i < MAX_BULLET; i++)
         bullet.push_back({ AsteroidTexture });
 
-    Asteroid asteroids(AsteroidTexture);
+    std::vector<Asteroid> asteroids;
+    for (int i = 0; i < MAX_BIG_METEORS; i++)
+        asteroids.push_back({ AsteroidTexture });
+    //Asteroid asteroids(AsteroidTexture);
 
     float rotationSpeed = 80.0f;
     float timeToFire = 0.5f;
     float fireTime = 0.0f;
 
 
+    int posx, posy;
+    int velx, vely;
+    bool correctRange = false;
+    victory = false;
+    pause = false;
+    destroyedMeteorsCount = 0;
 
    
     //asteroids.setScale(0.5f, 0.5f);
@@ -57,6 +90,47 @@ int main()
        bullet[i].lifeSpane = 0;
    }
   
+   for (int i = 0; i < MAX_BIG_METEORS; i++)
+   {
+       posx = randPosX(gen);
+
+       while (!correctRange)
+       {
+           if (posx > SCREEN_WIDTH / 2 - 150 && posx < SCREEN_WIDTH / 2 + 150) posx = randPosX(gen);
+           else correctRange = true;
+       }
+
+       correctRange = false;
+
+       posy = randPosY(gen);
+
+       while (!correctRange)
+       {
+           if (posy > SCREEN_HIGHT / 2 - 150 && posy < SCREEN_HIGHT / 2 + 150)  posy = randPosY(gen);
+           else correctRange = true;
+       }
+
+       asteroids[i].setPosition(posx, posy);
+
+       correctRange = false;
+       velx = randVelX(gen);
+       vely = randVelY(gen);
+
+       while (!correctRange)
+       {
+           if (velx == 0 && vely == 0)
+           {
+               velx = randVelX(gen);
+               vely = randVelY(gen);
+           }
+           else correctRange = true;
+       }
+
+       asteroids[i].Speed = sf::Vector2f(velx, vely);
+       asteroids[i].setScale(1.5f, 1.5f);
+       asteroids[i].isActive = true;
+       asteroids[i].color = sf::Color::Blue;
+   }
    // Game update
     while (window.isOpen())
     {
@@ -142,10 +216,10 @@ int main()
         player.setPosition(movement);
        
 
-        asteroids.setPosition(400, 400);
+       /* asteroids.setPosition(400, 400);
         
         float Rotation = 90.0f;
-        asteroids.rotate(Rotation * dt.asSeconds());
+        asteroids.rotate(Rotation * dt.asSeconds());*/
 
         for (int i = 0; i < MAX_BULLET; i++)
         {
@@ -193,16 +267,58 @@ int main()
             }
         }
 
+        for (int i = 0; i < MAX_BIG_METEORS; i++)
+        {
+            if (asteroids[i].isActive) 
+            {
+                asteroids[i].setPosition(asteroids[i].getPosition().x + asteroids[i].Speed.x, asteroids[i].getPosition().y + asteroids[i].Speed.y);
+
+                //Big Asteroids Wall waraping
+                if (asteroids[i].getPosition().x > SCREEN_WIDTH + asteroids[i].getGlobalBounds().height) asteroids[i].setPosition(-(asteroids[i].getGlobalBounds().height),asteroids[i].getPosition().y);
+                else if (asteroids[i].getPosition().x < -(asteroids[i].getGlobalBounds().height)) asteroids[i].setPosition(SCREEN_WIDTH + asteroids[i].getGlobalBounds().height, asteroids[i].getPosition().y);
+                if (asteroids[i].getPosition().y > (SCREEN_HIGHT + asteroids[i].getGlobalBounds().height)) asteroids[i].setPosition(asteroids[i].getPosition().x, -(asteroids[i].getGlobalBounds().height));
+                else if (asteroids[i].getPosition().y < -(asteroids[i].getGlobalBounds().height)) asteroids[i].setPosition(asteroids[i].getPosition().x, SCREEN_HIGHT + asteroids[i].getGlobalBounds().height);
+            }
+        }
+
+        for (int i = 0; i < MAX_BIG_METEORS; i++)
+        {
+            if(asteroids[i].isActive)
+                asteroids[i].draw(window);
+            
+        }
+
         for (int i = 0; i < MAX_BULLET; i++)
         {
             if (bullet[i].isActive) bullet[i].draw(window);
         }
         player.draw(window);
-        asteroids.draw(window);
-        if (player.getGlobalBounds().intersects(asteroids.getGlobalBounds()))
+
+        //check for player collision
+        for (int i = 0; i < MAX_BIG_METEORS; i++)
         {
-            //collion happening
-            window.close();
+            if (checkCollision(player.getGlobalBounds(),asteroids[i].getGlobalBounds()))
+            {
+                //collion happening
+                window.close();
+            }
+        }
+       
+         //check for bullet vs Asteroids collision
+        for (int i = 0; i < MAX_BULLET; i++)
+        {
+            if (bullet[i].isActive)
+            {
+                for (int a = 0; a < MAX_BIG_METEORS; a++)
+                {
+                    if (asteroids[a].isActive && checkCollision(bullet[i].getGlobalBounds(), asteroids[a].getGlobalBounds()))
+                    {
+                        bullet[i].isActive = false;
+                        bullet[i].lifeSpane = 0;
+                        asteroids[a].isActive = false;
+                    }
+                }
+            }
         }
 
         //-----------------------------------------------------------------------------------
