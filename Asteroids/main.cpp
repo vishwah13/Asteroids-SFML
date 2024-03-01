@@ -57,14 +57,21 @@ int main()
     //Bullet bullet(AsteroidTexture);
     std::vector<Bullet> bullet;
     for (int i = 0; i < MAX_BULLET; i++)
-        bullet.push_back({ AsteroidTexture });
+        bullet.push_back({AsteroidTexture});
 
-    std::vector<Asteroid> asteroids;
+    std::vector<Asteroid> bigAsteroids;
     for (int i = 0; i < MAX_BIG_METEORS; i++)
-        asteroids.push_back({ AsteroidTexture });
-    //Asteroid asteroids(AsteroidTexture);
+        bigAsteroids.push_back({ AsteroidTexture });
 
-    float rotationSpeed = 80.0f;
+    std::vector<Asteroid> midAsteroids;
+    for (int i = 0; i < MAX_MEDIUM_METEORS; i++)
+        midAsteroids.push_back({ AsteroidTexture });
+
+    std::vector<Asteroid> smallAsteroids;
+    for (int i = 0; i < MAX_SMALL_METEORS; i++)
+        smallAsteroids.push_back({ AsteroidTexture });
+
+    float rotationSpeed = 150.0f;
     float timeToFire = 0.5f;
     float fireTime = 0.0f;
 
@@ -110,7 +117,7 @@ int main()
            else correctRange = true;
        }
 
-       asteroids[i].setPosition(posx, posy);
+       bigAsteroids[i].setPosition(posx, posy);
 
        correctRange = false;
        velx = randVelX(gen);
@@ -126,11 +133,28 @@ int main()
            else correctRange = true;
        }
 
-       asteroids[i].Speed = sf::Vector2f(velx, vely);
-       asteroids[i].setScale(1.5f, 1.5f);
-       asteroids[i].isActive = true;
-       asteroids[i].color = sf::Color::Blue;
+       bigAsteroids[i].Speed = sf::Vector2f(velx, vely);
+       bigAsteroids[i].setScale(1.5f, 1.5f);
+       bigAsteroids[i].isActive = true;
+
    }
+
+   for (int i = 0; i < MAX_MEDIUM_METEORS; i++)
+   {
+       midAsteroids[i].setPosition(sf::Vector2f(-100, 100));
+       midAsteroids[i].Speed = sf::Vector2f(0.0f, 0.0f);
+       midAsteroids[i].setScale(1.0f, 1.0f);
+       midAsteroids[i].isActive = false;
+   }
+
+   for (int i = 0; i < MAX_SMALL_METEORS; i++)
+   {
+       smallAsteroids[i].setPosition(sf::Vector2f(-100, 100));
+       smallAsteroids[i].Speed = sf::Vector2f(0.0f, 0.0f);
+       smallAsteroids[i].setScale(0.5f, 0.5f);
+       smallAsteroids[i].isActive = false;
+   }
+
    // Game update
     while (window.isOpen())
     {
@@ -214,12 +238,7 @@ int main()
         else if (movement.y < -(player.shipHight)) movement.y = SCREEN_HIGHT + player.shipHight;
 
         player.setPosition(movement);
-       
-
-       /* asteroids.setPosition(400, 400);
-        
-        float Rotation = 90.0f;
-        asteroids.rotate(Rotation * dt.asSeconds());*/
+      
 
         for (int i = 0; i < MAX_BULLET; i++)
         {
@@ -269,23 +288,129 @@ int main()
 
         for (int i = 0; i < MAX_BIG_METEORS; i++)
         {
-            if (asteroids[i].isActive) 
+            if (bigAsteroids[i].isActive) 
             {
-                asteroids[i].setPosition(asteroids[i].getPosition().x + asteroids[i].Speed.x, asteroids[i].getPosition().y + asteroids[i].Speed.y);
+                bigAsteroids[i].setPosition(bigAsteroids[i].getPosition().x + bigAsteroids[i].Speed.x, bigAsteroids[i].getPosition().y + bigAsteroids[i].Speed.y);
 
                 //Big Asteroids Wall waraping
-                if (asteroids[i].getPosition().x > SCREEN_WIDTH + asteroids[i].getGlobalBounds().height) asteroids[i].setPosition(-(asteroids[i].getGlobalBounds().height),asteroids[i].getPosition().y);
-                else if (asteroids[i].getPosition().x < -(asteroids[i].getGlobalBounds().height)) asteroids[i].setPosition(SCREEN_WIDTH + asteroids[i].getGlobalBounds().height, asteroids[i].getPosition().y);
-                if (asteroids[i].getPosition().y > (SCREEN_HIGHT + asteroids[i].getGlobalBounds().height)) asteroids[i].setPosition(asteroids[i].getPosition().x, -(asteroids[i].getGlobalBounds().height));
-                else if (asteroids[i].getPosition().y < -(asteroids[i].getGlobalBounds().height)) asteroids[i].setPosition(asteroids[i].getPosition().x, SCREEN_HIGHT + asteroids[i].getGlobalBounds().height);
+                if (bigAsteroids[i].getPosition().x > SCREEN_WIDTH + bigAsteroids[i].getGlobalBounds().height) bigAsteroids[i].setPosition(-(bigAsteroids[i].getGlobalBounds().height),bigAsteroids[i].getPosition().y);
+                else if (bigAsteroids[i].getPosition().x < -(bigAsteroids[i].getGlobalBounds().height)) bigAsteroids[i].setPosition(SCREEN_WIDTH + bigAsteroids[i].getGlobalBounds().height, bigAsteroids[i].getPosition().y);
+                if (bigAsteroids[i].getPosition().y > (SCREEN_HIGHT + bigAsteroids[i].getGlobalBounds().height)) bigAsteroids[i].setPosition(bigAsteroids[i].getPosition().x, -(bigAsteroids[i].getGlobalBounds().height));
+                else if (bigAsteroids[i].getPosition().y < -(bigAsteroids[i].getGlobalBounds().height)) bigAsteroids[i].setPosition(bigAsteroids[i].getPosition().x, SCREEN_HIGHT + bigAsteroids[i].getGlobalBounds().height);
             }
         }
 
+        for (int i = 0; i < MAX_MEDIUM_METEORS; i++)
+        {
+            if (midAsteroids[i].isActive)
+            {
+                midAsteroids[i].setPosition(midAsteroids[i].getPosition().x + midAsteroids[i].Speed.x, midAsteroids[i].getPosition().y + midAsteroids[i].Speed.y);
+
+                //Big Asteroids Wall waraping
+                if (midAsteroids[i].getPosition().x > SCREEN_WIDTH + midAsteroids[i].getGlobalBounds().height) midAsteroids[i].setPosition(-(midAsteroids[i].getGlobalBounds().height), midAsteroids[i].getPosition().y);
+                else if (midAsteroids[i].getPosition().x < -(midAsteroids[i].getGlobalBounds().height)) midAsteroids[i].setPosition(SCREEN_WIDTH + midAsteroids[i].getGlobalBounds().height, midAsteroids[i].getPosition().y);
+                if (midAsteroids[i].getPosition().y > (SCREEN_HIGHT + midAsteroids[i].getGlobalBounds().height)) midAsteroids[i].setPosition(midAsteroids[i].getPosition().x, -(midAsteroids[i].getGlobalBounds().height));
+                else if (midAsteroids[i].getPosition().y < -(midAsteroids[i].getGlobalBounds().height)) midAsteroids[i].setPosition(midAsteroids[i].getPosition().x, SCREEN_HIGHT + midAsteroids[i].getGlobalBounds().height);
+            }
+        }
+
+        for (int i = 0; i < MAX_SMALL_METEORS; i++)
+        {
+            if (smallAsteroids[i].isActive)
+            {
+                smallAsteroids[i].setPosition(smallAsteroids[i].getPosition().x + smallAsteroids[i].Speed.x, smallAsteroids[i].getPosition().y + smallAsteroids[i].Speed.y);
+
+                //Big Asteroids Wall waraping
+                if (smallAsteroids[i].getPosition().x > SCREEN_WIDTH + smallAsteroids[i].getGlobalBounds().height) smallAsteroids[i].setPosition(-(smallAsteroids[i].getGlobalBounds().height), smallAsteroids[i].getPosition().y);
+                else if (smallAsteroids[i].getPosition().x < -(smallAsteroids[i].getGlobalBounds().height)) smallAsteroids[i].setPosition(SCREEN_WIDTH + smallAsteroids[i].getGlobalBounds().height, smallAsteroids[i].getPosition().y);
+                if (smallAsteroids[i].getPosition().y > (SCREEN_HIGHT + smallAsteroids[i].getGlobalBounds().height)) smallAsteroids[i].setPosition(smallAsteroids[i].getPosition().x, -(smallAsteroids[i].getGlobalBounds().height));
+                else if (smallAsteroids[i].getPosition().y < -(smallAsteroids[i].getGlobalBounds().height)) smallAsteroids[i].setPosition(smallAsteroids[i].getPosition().x, SCREEN_HIGHT + smallAsteroids[i].getGlobalBounds().height);
+            }
+        }
+
+        //check for bullet vs Asteroids collision
+        for (int i = 0; i < MAX_BULLET; i++)
+        {
+            if (bullet[i].isActive)
+            {
+                for (int a = 0; a < MAX_BIG_METEORS; a++)
+                {
+                    if (bigAsteroids[a].isActive && checkCollision(bullet[i].getGlobalBounds(), bigAsteroids[a].getGlobalBounds()))
+                    {
+                        bullet[i].isActive = false;
+                        bullet[i].lifeSpane = 0;
+                        bigAsteroids[a].isActive = false;
+                        destroyedMeteorsCount++;
+
+                        for (int j = 0; j < 2; j++)
+                        {
+                            if (midMeteorsCount % 2 == 0)
+                            {
+                                midAsteroids[midMeteorsCount].setPosition(bigAsteroids[a].getPosition());
+                                midAsteroids[midMeteorsCount].Speed = sf::Vector2f(cos(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED * -1, sin(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED * -1);
+                            }
+                            else
+                            {
+                                midAsteroids[midMeteorsCount].setPosition(bigAsteroids[a].getPosition());
+                                midAsteroids[midMeteorsCount].Speed = sf::Vector2f(cos(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED, sin(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED);
+                            }
+
+                            midAsteroids[midMeteorsCount].isActive = true;
+                            midMeteorsCount++;
+                        }
+                        a = MAX_BIG_METEORS;
+                    }
+                }
+                //check collsion for breaking medium to small
+                for (int b = 0; b < MAX_MEDIUM_METEORS; b++)
+                {
+                    if (midAsteroids[b].isActive && checkCollision(bullet[i].getGlobalBounds(), midAsteroids[b].getGlobalBounds()))
+                    {
+                        bullet[i].isActive = false;
+                        bullet[i].lifeSpane = 0;
+                        midAsteroids[b].isActive = false;
+                        destroyedMeteorsCount++;
+
+                        for (int j = 0; j < 2; j++)
+                        {
+                            if (smallMeteorsCount % 2 == 0)
+                            {
+                                smallAsteroids[smallMeteorsCount].setPosition(midAsteroids[b].getPosition());
+                                smallAsteroids[smallMeteorsCount].Speed = sf::Vector2f(cos(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED * -1, sin(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED * -1);
+                            }
+                            else
+                            {
+                                smallAsteroids[smallMeteorsCount].setPosition(midAsteroids[b].getPosition());
+                                smallAsteroids[smallMeteorsCount].Speed = sf::Vector2f(cos(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED, sin(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED);
+                            }
+
+                            smallAsteroids[smallMeteorsCount].isActive = true;
+                            smallMeteorsCount++;
+                        }
+                        b = MAX_MEDIUM_METEORS;
+                    }
+                }
+            }
+        }
+
+
         for (int i = 0; i < MAX_BIG_METEORS; i++)
         {
-            if(asteroids[i].isActive)
-                asteroids[i].draw(window);
+            if(bigAsteroids[i].isActive)
+                bigAsteroids[i].draw(window);
             
+        }
+
+        for (int i = 0; i < MAX_MEDIUM_METEORS; i++)
+        {
+            if (midAsteroids[i].isActive)
+                midAsteroids[i].draw(window);
+        }
+
+        for (int i = 0; i < MAX_SMALL_METEORS; i++)
+        {
+            if (smallAsteroids[i].isActive)
+                smallAsteroids[i].draw(window);
         }
 
         for (int i = 0; i < MAX_BULLET; i++)
@@ -297,27 +422,10 @@ int main()
         //check for player collision
         for (int i = 0; i < MAX_BIG_METEORS; i++)
         {
-            if (checkCollision(player.getGlobalBounds(),asteroids[i].getGlobalBounds()))
+            if (checkCollision(player.getGlobalBounds(),bigAsteroids[i].getGlobalBounds()))
             {
                 //collion happening
-                window.close();
-            }
-        }
-       
-         //check for bullet vs Asteroids collision
-        for (int i = 0; i < MAX_BULLET; i++)
-        {
-            if (bullet[i].isActive)
-            {
-                for (int a = 0; a < MAX_BIG_METEORS; a++)
-                {
-                    if (asteroids[a].isActive && checkCollision(bullet[i].getGlobalBounds(), asteroids[a].getGlobalBounds()))
-                    {
-                        bullet[i].isActive = false;
-                        bullet[i].lifeSpane = 0;
-                        asteroids[a].isActive = false;
-                    }
-                }
+                //window.close();
             }
         }
 
