@@ -12,11 +12,15 @@ public:
 	};
 	virtual ~GameObject();
 	sf::FloatRect getGlobalBounds() const;
+	void WrapGameObject(int width,int height);
 	void draw(sf::RenderWindow& window);
 
 	sf::Sprite getSprite();
 protected:
 	sf::Sprite m_sprite;
+
+public:
+	bool isActive;
 };
 
 

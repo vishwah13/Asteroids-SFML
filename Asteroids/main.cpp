@@ -10,7 +10,7 @@
 #define PLAYER_SPEED 5.0f
 #define MAX_BULLET 10
 #define PI 3.14159265358979323846f
-#define METEORS_SPEED       2
+#define METEORS_SPEED       3
 #define MAX_BIG_METEORS     6
 #define MAX_MEDIUM_METEORS  12
 #define MAX_SMALL_METEORS   24
@@ -36,8 +36,8 @@ int main()
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> randPosX(0, SCREEN_WIDTH);
-    std::uniform_int_distribution<> randPosY(0, SCREEN_HIGHT);
+    std::uniform_int_distribution<> randPosX(SCREEN_WIDTH, SCREEN_WIDTH + 100);
+    std::uniform_int_distribution<> randPosY(SCREEN_HIGHT, SCREEN_HIGHT + 100);
     std::uniform_int_distribution<> randVelX(-METEORS_SPEED, METEORS_SPEED);
     std::uniform_int_distribution<> randVelY(-METEORS_SPEED, METEORS_SPEED);
    //loading the assets
@@ -78,7 +78,7 @@ int main()
 
     int posx, posy;
     int velx, vely;
-    bool correctRange = false;
+
     victory = false;
     pause = false;
     destroyedMeteorsCount = 0;
@@ -100,37 +100,17 @@ int main()
    for (int i = 0; i < MAX_BIG_METEORS; i++)
    {
        posx = randPosX(gen);
-
-       while (!correctRange)
-       {
-           if (posx > SCREEN_WIDTH / 2 - 150 && posx < SCREEN_WIDTH / 2 + 150) posx = randPosX(gen);
-           else correctRange = true;
-       }
-
-       correctRange = false;
-
        posy = randPosY(gen);
-
-       while (!correctRange)
-       {
-           if (posy > SCREEN_HIGHT / 2 - 150 && posy < SCREEN_HIGHT / 2 + 150)  posy = randPosY(gen);
-           else correctRange = true;
-       }
 
        bigAsteroids[i].setPosition(posx, posy);
 
-       correctRange = false;
        velx = randVelX(gen);
        vely = randVelY(gen);
 
-       while (!correctRange)
+       if (velx == 0 && vely == 0)
        {
-           if (velx == 0 && vely == 0)
-           {
-               velx = randVelX(gen);
-               vely = randVelY(gen);
-           }
-           else correctRange = true;
+           velx = randVelX(gen);
+           vely = randVelY(gen);
        }
 
        bigAsteroids[i].Speed = sf::Vector2f(velx, vely);
@@ -288,44 +268,20 @@ int main()
 
         for (int i = 0; i < MAX_BIG_METEORS; i++)
         {
-            if (bigAsteroids[i].isActive) 
-            {
-                bigAsteroids[i].setPosition(bigAsteroids[i].getPosition().x + bigAsteroids[i].Speed.x, bigAsteroids[i].getPosition().y + bigAsteroids[i].Speed.y);
-
-                //Big Asteroids Wall waraping
-                if (bigAsteroids[i].getPosition().x > SCREEN_WIDTH + bigAsteroids[i].getGlobalBounds().height) bigAsteroids[i].setPosition(-(bigAsteroids[i].getGlobalBounds().height),bigAsteroids[i].getPosition().y);
-                else if (bigAsteroids[i].getPosition().x < -(bigAsteroids[i].getGlobalBounds().height)) bigAsteroids[i].setPosition(SCREEN_WIDTH + bigAsteroids[i].getGlobalBounds().height, bigAsteroids[i].getPosition().y);
-                if (bigAsteroids[i].getPosition().y > (SCREEN_HIGHT + bigAsteroids[i].getGlobalBounds().height)) bigAsteroids[i].setPosition(bigAsteroids[i].getPosition().x, -(bigAsteroids[i].getGlobalBounds().height));
-                else if (bigAsteroids[i].getPosition().y < -(bigAsteroids[i].getGlobalBounds().height)) bigAsteroids[i].setPosition(bigAsteroids[i].getPosition().x, SCREEN_HIGHT + bigAsteroids[i].getGlobalBounds().height);
-            }
+            bigAsteroids[i].setPosition(bigAsteroids[i].getPosition().x + bigAsteroids[i].Speed.x, bigAsteroids[i].getPosition().y + bigAsteroids[i].Speed.y);
+            bigAsteroids[i].WrapGameObject(SCREEN_WIDTH, SCREEN_HIGHT);
         }
 
         for (int i = 0; i < MAX_MEDIUM_METEORS; i++)
         {
-            if (midAsteroids[i].isActive)
-            {
-                midAsteroids[i].setPosition(midAsteroids[i].getPosition().x + midAsteroids[i].Speed.x, midAsteroids[i].getPosition().y + midAsteroids[i].Speed.y);
-
-                //Big Asteroids Wall waraping
-                if (midAsteroids[i].getPosition().x > SCREEN_WIDTH + midAsteroids[i].getGlobalBounds().height) midAsteroids[i].setPosition(-(midAsteroids[i].getGlobalBounds().height), midAsteroids[i].getPosition().y);
-                else if (midAsteroids[i].getPosition().x < -(midAsteroids[i].getGlobalBounds().height)) midAsteroids[i].setPosition(SCREEN_WIDTH + midAsteroids[i].getGlobalBounds().height, midAsteroids[i].getPosition().y);
-                if (midAsteroids[i].getPosition().y > (SCREEN_HIGHT + midAsteroids[i].getGlobalBounds().height)) midAsteroids[i].setPosition(midAsteroids[i].getPosition().x, -(midAsteroids[i].getGlobalBounds().height));
-                else if (midAsteroids[i].getPosition().y < -(midAsteroids[i].getGlobalBounds().height)) midAsteroids[i].setPosition(midAsteroids[i].getPosition().x, SCREEN_HIGHT + midAsteroids[i].getGlobalBounds().height);
-            }
+            midAsteroids[i].setPosition(midAsteroids[i].getPosition().x + midAsteroids[i].Speed.x, midAsteroids[i].getPosition().y + midAsteroids[i].Speed.y);
+            midAsteroids[i].WrapGameObject(SCREEN_WIDTH, SCREEN_HIGHT);
         }
 
         for (int i = 0; i < MAX_SMALL_METEORS; i++)
         {
-            if (smallAsteroids[i].isActive)
-            {
-                smallAsteroids[i].setPosition(smallAsteroids[i].getPosition().x + smallAsteroids[i].Speed.x, smallAsteroids[i].getPosition().y + smallAsteroids[i].Speed.y);
-
-                //Big Asteroids Wall waraping
-                if (smallAsteroids[i].getPosition().x > SCREEN_WIDTH + smallAsteroids[i].getGlobalBounds().height) smallAsteroids[i].setPosition(-(smallAsteroids[i].getGlobalBounds().height), smallAsteroids[i].getPosition().y);
-                else if (smallAsteroids[i].getPosition().x < -(smallAsteroids[i].getGlobalBounds().height)) smallAsteroids[i].setPosition(SCREEN_WIDTH + smallAsteroids[i].getGlobalBounds().height, smallAsteroids[i].getPosition().y);
-                if (smallAsteroids[i].getPosition().y > (SCREEN_HIGHT + smallAsteroids[i].getGlobalBounds().height)) smallAsteroids[i].setPosition(smallAsteroids[i].getPosition().x, -(smallAsteroids[i].getGlobalBounds().height));
-                else if (smallAsteroids[i].getPosition().y < -(smallAsteroids[i].getGlobalBounds().height)) smallAsteroids[i].setPosition(smallAsteroids[i].getPosition().x, SCREEN_HIGHT + smallAsteroids[i].getGlobalBounds().height);
-            }
+            smallAsteroids[i].setPosition(smallAsteroids[i].getPosition().x + smallAsteroids[i].Speed.x, smallAsteroids[i].getPosition().y + smallAsteroids[i].Speed.y);
+            smallAsteroids[i].WrapGameObject(SCREEN_WIDTH, SCREEN_HIGHT);
         }
 
         //check for bullet vs Asteroids collision
@@ -404,6 +360,7 @@ int main()
             }
         }
 
+        if (destroyedMeteorsCount == MAX_BIG_METEORS + MAX_MEDIUM_METEORS + MAX_SMALL_METEORS) victory = true;
 
         for (int i = 0; i < MAX_BIG_METEORS; i++)
         {
