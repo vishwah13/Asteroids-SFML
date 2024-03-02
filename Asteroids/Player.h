@@ -7,11 +7,10 @@ public:
 	Player(sf::Texture& texture, const sf::Vector2f& position = sf::Vector2f(0.0f, 0.0f));
 	~Player();
 
-    float shipHight = 0.0f;
-    //shipHight = Player.getGlobalBounds().height;
+    float shipHight = getGlobalBounds().height;
     sf::Vector2f playerSpeed = sf::Vector2f(0.0f,0.0f);
     float Acceleration = 0.0f;
-    //float RotationSpeed = 0;
+    int life = 0;
 private:
 
 };

@@ -4,6 +4,7 @@
 #include "Asteroids.h"
 #include <math.h>
 #include <random>
+#include <string>
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HIGHT 800
@@ -14,6 +15,7 @@
 #define MAX_BIG_METEORS     6
 #define MAX_MEDIUM_METEORS  12
 #define MAX_SMALL_METEORS   24
+#define MAX_PLAYER_LIFE 3
 
 
 static bool gameOver = false;
@@ -43,16 +45,33 @@ int main()
    //loading the assets
     sf::Texture PlayerTexture;
     sf::Texture AsteroidTexture;
+    sf::Font font;
 
     PlayerTexture.loadFromFile("Assets/Ship.png");
     AsteroidTexture.loadFromFile("Assets/Asteroid.png");
+    font.loadFromFile("Assets/Hyperspace-JvEM.ttf");
+
+    sf::Text lifeText;
+    lifeText.setFont(font);
+    lifeText.setCharacterSize(24);
+    lifeText.setFillColor(sf::Color::White);
+    lifeText.setPosition(10, 10);
+
+    sf::Text scoreText;
+    scoreText.setFont(font);
+    scoreText.setCharacterSize(24);
+    scoreText.setFillColor(sf::Color::White);
+    scoreText.setPosition(SCREEN_WIDTH - 150, 10);
 
   
    
 
     //Initializing the game
+    gameOver = false;
     Player player(PlayerTexture);
-   
+    player.life = MAX_PLAYER_LIFE;
+
+
     //bullet stuff
     //Bullet bullet(AsteroidTexture);
     std::vector<Bullet> bullet;
@@ -74,6 +93,9 @@ int main()
     float rotationSpeed = 150.0f;
     float timeToFire = 0.5f;
     float fireTime = 0.0f;
+    sf::Clock graceClock;
+    sf::Time gracePeriod = sf::seconds(2.0f);
+    bool playerdamaged = false;
 
 
     int posx, posy;
@@ -85,7 +107,7 @@ int main()
 
    
     //asteroids.setScale(0.5f, 0.5f);
-    player.setPosition(sf::Vector2f(200,200));
+    player.setPosition(sf::Vector2f(400,400));
 
    for (int i = 0; i < MAX_BULLET;i++) 
    {
@@ -148,6 +170,8 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
         }
+
+        if (gameOver) return 0;
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         {
@@ -362,6 +386,16 @@ int main()
 
         if (destroyedMeteorsCount == MAX_BIG_METEORS + MAX_MEDIUM_METEORS + MAX_SMALL_METEORS) victory = true;
 
+        if (player.life <= 0) gameOver = true;
+
+        //Update UI
+        lifeText.setString("Life: " + std::to_string(player.life));
+        scoreText.setString("Score: " + std::to_string(destroyedMeteorsCount));
+
+        window.draw(lifeText);
+        window.draw(scoreText);
+
+
         for (int i = 0; i < MAX_BIG_METEORS; i++)
         {
             if(bigAsteroids[i].isActive)
@@ -388,15 +422,27 @@ int main()
         player.draw(window);
 
         //check for player collision
-        for (int i = 0; i < MAX_BIG_METEORS; i++)
+      
+        if (!playerdamaged)
         {
-            if (checkCollision(player.getGlobalBounds(),bigAsteroids[i].getGlobalBounds()))
+            for (int i = 0; i < MAX_BIG_METEORS; i++)
             {
-                //collion happening
-                //window.close();
+                if (checkCollision(player.getGlobalBounds(), bigAsteroids[i].getGlobalBounds()) && !playerdamaged)
+                {
+                    player.life--;
+                    playerdamaged = true;
+                    graceClock.restart();
+                    player.setPosition(400, 400);
+                    break;
+                }
             }
         }
+       
 
+        if (playerdamaged && graceClock.getElapsedTime() >= gracePeriod)
+        {
+            playerdamaged = false;
+        }
         //-----------------------------------------------------------------------------------
         // Display the updated game state
         window.display();
