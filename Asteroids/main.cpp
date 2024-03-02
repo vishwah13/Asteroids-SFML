@@ -93,8 +93,8 @@ int main()
     float rotationSpeed = 150.0f;
     float timeToFire = 0.5f;
     float fireTime = 0.0f;
-    sf::Clock graceClock;
-    sf::Time gracePeriod = sf::seconds(2.0f);
+    float graceTimer = 0.0f;
+    float totalGraceTime = 3.0f;
     bool playerdamaged = false;
 
 
@@ -386,7 +386,7 @@ int main()
 
         if (destroyedMeteorsCount == MAX_BIG_METEORS + MAX_MEDIUM_METEORS + MAX_SMALL_METEORS) victory = true;
 
-        if (player.life <= 0) gameOver = true;
+        if (player.life < 0) gameOver = true;
 
         //Update UI
         lifeText.setString("Life: " + std::to_string(player.life));
@@ -431,17 +431,21 @@ int main()
                 {
                     player.life--;
                     playerdamaged = true;
-                    graceClock.restart();
                     player.setPosition(400, 400);
                     break;
                 }
             }
         }
+        else
+        {
+            graceTimer += dt.asSeconds();
+        }
        
 
-        if (playerdamaged && graceClock.getElapsedTime() >= gracePeriod)
+        if (playerdamaged && graceTimer >= totalGraceTime)
         {
             playerdamaged = false;
+            graceTimer = 0;
         }
         //-----------------------------------------------------------------------------------
         // Display the updated game state
