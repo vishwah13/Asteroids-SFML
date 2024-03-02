@@ -11,9 +11,9 @@
 #define MAX_BULLET 10
 #define PI 3.14159265358979323846f
 #define METEORS_SPEED       2
-#define MAX_BIG_METEORS     4
-#define MAX_MEDIUM_METEORS  8
-#define MAX_SMALL_METEORS   16
+#define MAX_BIG_METEORS     6
+#define MAX_MEDIUM_METEORS  12
+#define MAX_SMALL_METEORS   24
 
 
 static bool gameOver = false;
@@ -388,6 +388,17 @@ int main()
                             smallMeteorsCount++;
                         }
                         b = MAX_MEDIUM_METEORS;
+                    }
+                }
+                for (int c = 0; c < MAX_SMALL_METEORS; c++)
+                {
+                    if (smallAsteroids[c].isActive && checkCollision(bullet[i].getGlobalBounds(), smallAsteroids[c].getGlobalBounds()))
+                    {
+                        bullet[i].isActive = false;
+                        bullet[i].lifeSpane = 0;
+                        smallAsteroids[c].isActive = false;
+                        destroyedMeteorsCount++;
+                        c = MAX_SMALL_METEORS;
                     }
                 }
             }
