@@ -4,7 +4,7 @@
 class StartScreen : public Game
 {
 public:
-	StartScreen();
+	StartScreen(Assets& assets);
 	~StartScreen();
 
 	void StartGame() override;

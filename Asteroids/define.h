@@ -13,5 +13,6 @@
 enum class GameState {
     StartScreen,
     GameScreen,
-    GameOverScreen
+    GameOverScreen,
+    VictoryScreen
 };

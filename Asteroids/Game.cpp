@@ -1,7 +1,8 @@
 #include "Game.h"
 
-Game::Game()
+Game::Game(Assets& assets) : gameAssets(assets)
 {
+	
 }
 
 Game::~Game()

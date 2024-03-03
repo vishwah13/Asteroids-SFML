@@ -1,16 +1,13 @@
 #include "GameOver.h"
 
-GameOverScreen::GameOverScreen()
+GameOverScreen::GameOverScreen(Assets& assets) :Game(assets)
 {
 	StartGame();
 }
 
 void GameOverScreen::StartGame()
 {
-    sf::Font* font = new sf::Font();
-    font->loadFromFile("Assets/Hyperspace-JvEM.ttf");
-
-    gameOverText.setFont(*font);
+    gameOverText.setFont(gameAssets.getFont());
     gameOverText.setCharacterSize(24);
     gameOverText.setFillColor(sf::Color::White);
     gameOverText.setPosition(250, 300);

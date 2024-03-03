@@ -1,7 +1,7 @@
 #include "GameScreen.h"
 
 
-GameScreen::GameScreen()
+GameScreen::GameScreen(Assets& assets) :Game(assets)
 {
     StartGame();
 }
@@ -20,25 +20,15 @@ void GameScreen::StartGame()
     std::uniform_int_distribution<> randVelX(-METEORS_SPEED, METEORS_SPEED);
     std::uniform_int_distribution<> randVelY(-METEORS_SPEED, METEORS_SPEED);
 
-    //loading the assets
-    sf::Texture* PlayerTexture = new sf::Texture();
-    sf::Texture* AsteroidTexture = new sf::Texture();
-    sf::Font* font = new sf::Font();
+    
 
-
-    PlayerTexture->loadFromFile("Assets/Ship.png");
-    AsteroidTexture->loadFromFile("Assets/Asteroid.png");
-    font->loadFromFile("Assets/Hyperspace-JvEM.ttf");
-
-
-
-    lifeText.setFont(*font);
+    lifeText.setFont(gameAssets.getFont());
     lifeText.setCharacterSize(24);
     lifeText.setFillColor(sf::Color::White);
     lifeText.setPosition(10, 10);
 
 
-    scoreText.setFont(*font);
+    scoreText.setFont(gameAssets.getFont());
     scoreText.setCharacterSize(24);
     scoreText.setFillColor(sf::Color::White);
     scoreText.setPosition(SCREEN_WIDTH - 150, 10);
@@ -51,7 +41,7 @@ void GameScreen::StartGame()
     pause = false;
     destroyedMeteorsCount = 0;
     //Player player(PlayerTexture);
-    player.SetTexture(*PlayerTexture);
+    player.SetTexture(gameAssets.getPlayerTexture());
     player.life = MAX_PLAYER_LIFE;
     player.setPosition(sf::Vector2f(400, 400));
 
@@ -59,19 +49,19 @@ void GameScreen::StartGame()
     //Bullet bullet(AsteroidTexture);
 
     for (int i = 0; i < MAX_BULLET; i++)
-        bullet.push_back({ *AsteroidTexture });
+        bullet.push_back({ gameAssets.getAsteroidsTexture()});
 
 
     for (int i = 0; i < MAX_BIG_METEORS; i++)
-        bigAsteroids.push_back({ *AsteroidTexture });
+        bigAsteroids.push_back({ gameAssets.getAsteroidsTexture() });
 
 
     for (int i = 0; i < MAX_MEDIUM_METEORS; i++)
-        midAsteroids.push_back({ *AsteroidTexture });
+        midAsteroids.push_back({ gameAssets.getAsteroidsTexture() });
 
 
     for (int i = 0; i < MAX_SMALL_METEORS; i++)
-        smallAsteroids.push_back({ *AsteroidTexture });
+        smallAsteroids.push_back({ gameAssets.getAsteroidsTexture() });
 
 
     int posx, posy;
@@ -107,6 +97,8 @@ void GameScreen::StartGame()
         bigAsteroids[i].setScale(1.5f, 1.5f);
         bigAsteroids[i].isActive = true;
 
+        totalMeteorsCount++;
+
     }
 
     for (int i = 0; i < MAX_MEDIUM_METEORS; i++)
@@ -129,6 +121,10 @@ void GameScreen::StartGame()
 void GameScreen::UpdateGame(float dt)  
 {
     if (gameOver) return;
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) pause = !pause;
+
+    if (pause) return;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
@@ -289,9 +285,14 @@ void GameScreen::UpdateGame(float dt)
                             midAsteroids[midMeteorsCount].Speed = sf::Vector2f(cos(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED, sin(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED);
                         }
 
+                       
                         midAsteroids[midMeteorsCount].isActive = true;
                         midMeteorsCount++;
+                        totalMeteorsCount++;
+
                     }
+                    //to fix a weird collision error
+                    bigAsteroids[a].setPosition(-1000, -1000);
                     a = MAX_BIG_METEORS;
                 }
             }
@@ -303,6 +304,7 @@ void GameScreen::UpdateGame(float dt)
                     bullet[i].isActive = false;
                     bullet[i].lifeSpane = 0;
                     midAsteroids[b].isActive = false;
+                   
                     destroyedMeteorsCount++;
 
                     for (int j = 0; j < 2; j++)
@@ -318,9 +320,13 @@ void GameScreen::UpdateGame(float dt)
                             smallAsteroids[smallMeteorsCount].Speed = sf::Vector2f(cos(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED, sin(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED);
                         }
 
+                       
                         smallAsteroids[smallMeteorsCount].isActive = true;
                         smallMeteorsCount++;
+                        totalMeteorsCount++;
+                      
                     }
+                    midAsteroids[b].setPosition(-1000, -1000);
                     b = MAX_MEDIUM_METEORS;
                 }
             }
@@ -332,6 +338,7 @@ void GameScreen::UpdateGame(float dt)
                     bullet[i].lifeSpane = 0;
                     smallAsteroids[c].isActive = false;
                     destroyedMeteorsCount++;
+                    smallAsteroids[c].setPosition(-1000, -1000);
                     c = MAX_SMALL_METEORS;
                 }
             }
@@ -386,7 +393,9 @@ void GameScreen::UpdateGame(float dt)
         graceTimer = 0;
     }
 
-    if (destroyedMeteorsCount == MAX_BIG_METEORS + MAX_MEDIUM_METEORS + MAX_SMALL_METEORS) victory = true;
+    if (destroyedMeteorsCount == MAX_BIG_METEORS + MAX_MEDIUM_METEORS + MAX_SMALL_METEORS) {
+        victory = true;
+    }
 
     if (player.life < 0) gameOver = true;
 

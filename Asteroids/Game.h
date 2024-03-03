@@ -7,22 +7,25 @@
 #include <random>
 #include <string>
 #include "define.h"
+#include "Assets.h"
 
 class Game
 {
 public:
-	Game();
+	Game(Assets& assets);
 	~Game();
 	virtual void StartGame() = 0;
 	virtual void UpdateGame(float dt) = 0;
 	virtual void DrawGame(sf::RenderWindow& window) = 0;
 	bool gameOver = false;
-private:
-
+	Assets& gameAssets;
+protected:
+	
 public:
 	bool pause = false;
 	bool victory = false;
 
+	int totalMeteorsCount = 0;
 	int midMeteorsCount = 0;
 	int smallMeteorsCount = 0;
 	int destroyedMeteorsCount = 0;
@@ -36,6 +39,7 @@ public:
 
 	sf::Text welcomeText;
 	sf::Text gameOverText;
+	sf::Text victoryText;
 	sf::Text lifeText;
 	sf::Text scoreText;
 	Player player;

@@ -6,7 +6,7 @@
 class GameScreen : public Game
 {
 public:
-	GameScreen();
+	GameScreen(Assets& assets);
 	~GameScreen();
 
 	void StartGame() override;

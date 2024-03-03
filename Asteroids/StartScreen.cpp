@@ -1,6 +1,6 @@
 #include "StartScreen.h"
 
-StartScreen::StartScreen()
+StartScreen::StartScreen(Assets& assets) :Game(assets)
 {
     StartGame();
 }
