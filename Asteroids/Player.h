@@ -4,6 +4,7 @@
 class Player : public GameObject
 {
 public:
+    Player(const sf::Vector2f& position = sf::Vector2f(0.0f, 0.0f));
 	Player(sf::Texture& texture, const sf::Vector2f& position = sf::Vector2f(0.0f, 0.0f));
 	~Player();
 
@@ -15,12 +16,3 @@ private:
 
 };
 
-Player::Player(sf::Texture& texture, const sf::Vector2f& position) : GameObject(texture,position)
-{
-    auto rect = m_sprite.getGlobalBounds();
-    m_sprite.setOrigin(rect.width * 0.5f, rect.height * 0.5f);
-}
-
-Player::~Player()
-{
-}
