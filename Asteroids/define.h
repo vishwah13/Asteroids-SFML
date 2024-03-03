@@ -9,3 +9,9 @@
 #define MAX_MEDIUM_METEORS  12
 #define MAX_SMALL_METEORS   24
 #define MAX_PLAYER_LIFE 3
+
+enum class GameState {
+    StartScreen,
+    GameScreen,
+    GameOverScreen
+};

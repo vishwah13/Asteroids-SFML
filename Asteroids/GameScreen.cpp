@@ -11,14 +11,14 @@ GameScreen::~GameScreen()
 
 }
 
-void GameScreen::StartGame()
+void GameScreen::StartGame() 
 {
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<> randPosX(SCREEN_WIDTH, SCREEN_WIDTH + 100);
-	std::uniform_int_distribution<> randPosY(SCREEN_HIGHT, SCREEN_HIGHT + 100);
-	std::uniform_int_distribution<> randVelX(-METEORS_SPEED, METEORS_SPEED);
-	std::uniform_int_distribution<> randVelY(-METEORS_SPEED, METEORS_SPEED);
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> randPosX(SCREEN_WIDTH, SCREEN_WIDTH + 100);
+    std::uniform_int_distribution<> randPosY(SCREEN_HIGHT, SCREEN_HIGHT + 100);
+    std::uniform_int_distribution<> randVelX(-METEORS_SPEED, METEORS_SPEED);
+    std::uniform_int_distribution<> randVelY(-METEORS_SPEED, METEORS_SPEED);
 
     //loading the assets
     sf::Texture* PlayerTexture = new sf::Texture();
@@ -31,6 +31,7 @@ void GameScreen::StartGame()
     font->loadFromFile("Assets/Hyperspace-JvEM.ttf");
 
 
+
     lifeText.setFont(*font);
     lifeText.setCharacterSize(24);
     lifeText.setFillColor(sf::Color::White);
@@ -41,7 +42,6 @@ void GameScreen::StartGame()
     scoreText.setCharacterSize(24);
     scoreText.setFillColor(sf::Color::White);
     scoreText.setPosition(SCREEN_WIDTH - 150, 10);
-
 
 
 
@@ -126,7 +126,7 @@ void GameScreen::StartGame()
     }
 }
 
-void GameScreen::UpdateGame(float dt)
+void GameScreen::UpdateGame(float dt)  
 {
     if (gameOver) return;
 

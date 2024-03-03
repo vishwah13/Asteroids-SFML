@@ -1,47 +1,20 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Player.h"
-#include "Bullet.h"
-#include "Asteroids.h"
-#include <math.h>
-#include <random>
-#include <string>
-#include "define.h"
+#include "Game.h"
 
 
-class GameScreen
+class GameScreen : public Game
 {
 public:
 	GameScreen();
 	~GameScreen();
 
-	void StartGame();
-	void UpdateGame(float dt);
-	void DrawGame(sf::RenderWindow& window);
-	bool gameOver = false;
+	void StartGame() override;
+	void UpdateGame(float dt) override;
+	void DrawGame(sf::RenderWindow& window) override;
 
 private:
-	bool pause = false;
-	bool victory = false;
-
-	int midMeteorsCount = 0;
-	int smallMeteorsCount = 0;
-	int destroyedMeteorsCount = 0;
-
-	float rotationSpeed = 150.0f;
-	float timeToFire = 0.5f;
-	float fireTime = 0.0f;
-	float graceTimer = 0.0f;
-	float totalGraceTime = 3.0f;
-	bool playerdamaged = false;
-
-	sf::Text lifeText;
-	sf::Text scoreText;
-	Player player;
-	std::vector<Bullet> bullet;
-	std::vector<Asteroid> bigAsteroids;
-	std::vector<Asteroid> midAsteroids;
-	std::vector<Asteroid> smallAsteroids;
+	
 
 	bool checkCollision(sf::FloatRect object1, const sf::FloatRect object2);
 };

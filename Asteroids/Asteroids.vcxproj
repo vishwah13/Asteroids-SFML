@@ -82,6 +82,7 @@
   <ItemGroup>
     <ClCompile Include="Asteroids.cpp" />
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="GameScreen.cpp" />
@@ -93,6 +94,7 @@
     <ClInclude Include="Asteroids.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="define.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameOver.h" />
     <ClInclude Include="GameScreen.h" />
