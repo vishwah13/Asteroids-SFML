@@ -11,6 +11,22 @@ Assets::Assets()
 
 Assets::~Assets()
 {
+    if (PlayerTexture) {
+        delete PlayerTexture;
+        PlayerTexture = nullptr;
+    }
+    if (AsteroidTexture) {
+        delete AsteroidTexture;
+        AsteroidTexture = nullptr;
+    }
+    if (font) {
+        delete font;
+        font = nullptr;
+    }
+    if (params) {
+        delete params;
+        params = nullptr;
+    }
 }
 
 sf::Font& Assets::getFont()
