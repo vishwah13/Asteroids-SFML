@@ -48,6 +48,7 @@ public:
 	float totalPlayerBlinkTime = 0.5f;
 
 	sf::Text welcomeText;
+	sf::Text tutorialText;
 	sf::Text gameOverText;
 	sf::Text victoryText;
 	sf::Text lifeText;

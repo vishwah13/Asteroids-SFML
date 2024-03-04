@@ -15,7 +15,7 @@ void VictoryScreen::StartGame()
     victoryText.setFont(gameAssets.getFont());
     victoryText.setCharacterSize(24);
     victoryText.setFillColor(sf::Color::White);
-    victoryText.setPosition(250, 300);
+    victoryText.setPosition(300, 300);
 
     gameOver = false;
 }
