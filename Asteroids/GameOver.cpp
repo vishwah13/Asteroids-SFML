@@ -5,6 +5,10 @@ GameOverScreen::GameOverScreen(Assets& assets) :Game(assets)
 	StartGame();
 }
 
+GameOverScreen::~GameOverScreen()
+{
+}
+
 void GameOverScreen::StartGame()
 {
     gameOverText.setFont(gameAssets.getFont());

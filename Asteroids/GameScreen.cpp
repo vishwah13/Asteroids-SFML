@@ -27,6 +27,7 @@ void GameScreen::StartGame()
     maxBullets = params["MAX_BULLET"];
     timeToFire = params["FIRE_RATE"];
     totalPlayerBlinkTime = params["PLAYER_BLINK_INTERVAL"];
+    bulletLifeTime = params["BULLET_LIFETIME"];
    
 
 
@@ -78,8 +79,8 @@ void GameScreen::StartGame()
         smallAsteroids.push_back({ gameAssets.getAsteroidsTexture() });
 
 
-    int posx, posy;
-    int velx, vely;
+    float posx, posy;
+    float velx, vely;
 
 
     for (int i = 0; i < maxBullets; i++)
@@ -179,8 +180,8 @@ void GameScreen::UpdateGame(float dt)
                 //bullet[i].setPosition((player.getPosition().x + player.getGlobalBounds().width / 2 + offsetX), player.getPosition().y + offsetY);
                 bullet[i].setPosition(player.getPosition().x + offsetX, player.getPosition().y + offsetY);
                 bullet[i].isActive = true;
-                bullet[i].speed.x = 1.5 * sin(player.getRotation() * static_cast<float>(PI) / 180.0f) * (playerSpeed);
-                bullet[i].speed.y = 1.5 * cos(player.getRotation() * static_cast<float>(PI) / 180.0f) * (playerSpeed);
+                bullet[i].speed.x = 1.5f * sin(player.getRotation() * static_cast<float>(PI) / 180.0f) * (playerSpeed);
+                bullet[i].speed.y = 1.5f * cos(player.getRotation() * static_cast<float>(PI) / 180.0f) * (playerSpeed);
                 bullet[i].setRotation(player.getRotation());
                 fireTime = 0.0f;
                 break;
@@ -190,9 +191,6 @@ void GameScreen::UpdateGame(float dt)
     else {
         fireTime = timeToFire;
     }
-
-    //-----------------------------------------------------------------------------------
-    // Game logic can go here
 
     sf::Vector2f movement = player.getPosition();
     movement.x += player.playerSpeed.x * player.acceleration;
@@ -244,7 +242,7 @@ void GameScreen::UpdateGame(float dt)
         }
 
 
-        if (bullet[i].lifeSpane >= 90)
+        if (bullet[i].lifeSpane >= bulletLifeTime)
         {
             bullet[i].isActive = false;
             bullet[i].setPosition(0.0f, 0.0f);

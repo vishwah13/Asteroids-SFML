@@ -18,9 +18,9 @@ public:
 	virtual void UpdateGame(float dt) = 0;
 	virtual void DrawGame(sf::RenderWindow& window) = 0;
 	bool gameOver = false;
-	Assets& gameAssets;
-protected:
 	
+protected:
+	Assets& gameAssets;
 public:
 	bool pause = false;
 	bool victory = false;
@@ -36,6 +36,7 @@ public:
 
 	int maxPlayerLife = 0;
 	int maxBullets = 0;
+	float bulletLifeTime = 0.0f;
 	float playerSpeed = 0;
 	float rotationSpeed = 0.0f;
 	float timeToFire = 0.0f;

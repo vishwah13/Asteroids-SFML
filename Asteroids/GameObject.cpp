@@ -26,7 +26,7 @@ sf::FloatRect GameObject::GetGlobalBounds() const
 void GameObject::SetTexture(sf::Texture& texture)
 {
     sprite.setTexture(texture);
-    //needed to be sperated from this function
+    //Sprites can rotate properly, needed to be sperated from this function
     sprite.setOrigin(sprite.getGlobalBounds().width * 0.5f, sprite.getGlobalBounds().height * 0.5f);
 }
 
