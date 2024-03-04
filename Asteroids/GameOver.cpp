@@ -14,7 +14,7 @@ void GameOverScreen::StartGame()
     gameOverText.setFont(gameAssets.getFont());
     gameOverText.setCharacterSize(24);
     gameOverText.setFillColor(sf::Color::White);
-    gameOverText.setPosition(250, 300);
+    gameOverText.setPosition(300, 300);
 
     gameOver = false;
 }
