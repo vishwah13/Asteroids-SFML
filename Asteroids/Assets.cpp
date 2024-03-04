@@ -28,9 +28,9 @@ sf::Texture& Assets::getAsteroidsTexture()
     return *AsteroidTexture;
 }
 
-std::unordered_map<std::string, int>* Assets::readGameParameters(const std::string& filename)
+std::unordered_map<std::string, float>* Assets::readGameParameters(const std::string& filename)
 {
-    std::unordered_map<std::string, int>* params = new std::unordered_map<std::string, int>();
+    std::unordered_map<std::string, float>* params = new std::unordered_map<std::string, float>();
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Failed to open file: " << filename << std::endl;
@@ -51,9 +51,9 @@ std::unordered_map<std::string, int>* Assets::readGameParameters(const std::stri
         std::string valueStr = line.substr(delimiterPos + 1);
 
       
-        int value;
+        float value;
         try {
-            value = std::stoi(valueStr);
+            value = std::stof(valueStr);
         }
         catch (const std::invalid_argument& e) {
             std::cerr << "Invalid value for key " << key << ": " << valueStr << std::endl;
@@ -68,7 +68,7 @@ std::unordered_map<std::string, int>* Assets::readGameParameters(const std::stri
     return params;
 }
 
-std::unordered_map<std::string, int>& Assets::getGameParams()
+std::unordered_map<std::string, float>& Assets::getGameParams()
 {
     return *params;
 }

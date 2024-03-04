@@ -14,19 +14,20 @@ GameScreen::~GameScreen()
 void GameScreen::StartGame() 
 {
     //Initializing the game
-    std::unordered_map<std::string, int> params = gameAssets.getGameParams();
+    std::unordered_map<std::string, float> params = gameAssets.getGameParams();
 
-    rotationSpeed = 150.0f;
-    timeToFire = 0.5f;
-    totalGraceTime = 3.0f;
-    totalPlayerBlinkTime = 0.5f;
-    totalBigMeteorsCount = params["MAX_BIG_METEORS "];
-    totalMidMeteorsCount = params["MAX_MEDIUM_METEORS "];
-    totalSmallMeteorsCount = params["MAX_SMALL_METEORS "];
-    meteorsSpeed = params["METEORS_SPEED "];
-    maxPlayerLife = params["MAX_PLAYER_LIFE "];
-    maxBullets = params["MAX_BULLET "];
-    playerSpeed = params["PLAYER_SPEED "];
+    playerSpeed = params["PLAYER_SPEED"];
+    rotationSpeed = params["PLAYER_ROTATION_SPEED"];
+    totalGraceTime = params["PLAYER_GRACE_TIME"];
+    totalBigMeteorsCount = params["MAX_BIG_METEORS"];
+    totalMidMeteorsCount = params["MAX_MEDIUM_METEORS"];
+    totalSmallMeteorsCount = params["MAX_SMALL_METEORS"];
+    meteorsSpeed = params["METEORS_SPEED"];
+    maxPlayerLife = params["MAX_PLAYER_LIFE"];
+    maxBullets = params["MAX_BULLET"];
+    timeToFire = params["FIRE_RATE"];
+    totalPlayerBlinkTime = params["PLAYER_BLINK_INTERVAL"];
+   
 
 
     gameOver = false;
