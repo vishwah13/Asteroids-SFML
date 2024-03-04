@@ -154,17 +154,17 @@ void GameScreen::UpdateGame(float dt)
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
-        if (player.Acceleration < 1) player.Acceleration += 0.04f;
+        if (player.acceleration < 1) player.acceleration += 0.04f;
     }
     else
     {
-        if (player.Acceleration > 0) player.Acceleration -= 0.02f;
-        else if (player.Acceleration < 0) player.Acceleration = 0;
+        if (player.acceleration > 0) player.acceleration -= 0.02f;
+        else if (player.acceleration < 0) player.acceleration = 0;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
-        if (player.Acceleration > 0) player.Acceleration -= 0.04f;
-        else if (player.Acceleration < 0) player.Acceleration = 0;
+        if (player.acceleration > 0) player.acceleration -= 0.04f;
+        else if (player.acceleration < 0) player.acceleration = 0;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
@@ -195,8 +195,8 @@ void GameScreen::UpdateGame(float dt)
     // Game logic can go here
 
     sf::Vector2f movement = player.getPosition();
-    movement.x += player.playerSpeed.x * player.Acceleration;
-    movement.y -= player.playerSpeed.y * player.Acceleration;
+    movement.x += player.playerSpeed.x * player.acceleration;
+    movement.y -= player.playerSpeed.y * player.acceleration;
 
 
     if (movement.x > SCREEN_WIDTH + player.shipHight) movement.x = -(player.shipHight);
@@ -278,7 +278,7 @@ void GameScreen::UpdateGame(float dt)
         {
             for (int a = 0; a < totalBigMeteorsCount; a++)
             {
-                if (bigAsteroids[a].isActive && checkCollision(bullet[i].getGlobalBounds(), bigAsteroids[a].getGlobalBounds()))
+                if (bigAsteroids[a].isActive && checkCollision(bullet[i].GetGlobalBounds(), bigAsteroids[a].GetGlobalBounds()))
                 {
                     bullet[i].isActive = false;
                     bullet[i].lifeSpane = 0;
@@ -312,7 +312,7 @@ void GameScreen::UpdateGame(float dt)
             //check collsion for breaking medium to small
             for (int b = 0; b < totalMidMeteorsCount; b++)
             {
-                if (midAsteroids[b].isActive && checkCollision(bullet[i].getGlobalBounds(), midAsteroids[b].getGlobalBounds()))
+                if (midAsteroids[b].isActive && checkCollision(bullet[i].GetGlobalBounds(), midAsteroids[b].GetGlobalBounds()))
                 {
                     bullet[i].isActive = false;
                     bullet[i].lifeSpane = 0;
@@ -345,7 +345,7 @@ void GameScreen::UpdateGame(float dt)
             }
             for (int c = 0; c < totalSmallMeteorsCount; c++)
             {
-                if (smallAsteroids[c].isActive && checkCollision(bullet[i].getGlobalBounds(), smallAsteroids[c].getGlobalBounds()))
+                if (smallAsteroids[c].isActive && checkCollision(bullet[i].GetGlobalBounds(), smallAsteroids[c].GetGlobalBounds()))
                 {
                     bullet[i].isActive = false;
                     bullet[i].lifeSpane = 0;
@@ -363,7 +363,7 @@ void GameScreen::UpdateGame(float dt)
     {
         for (int i = 0; i < totalBigMeteorsCount; i++)
         {
-            if (checkCollision(player.getGlobalBounds(), bigAsteroids[i].getGlobalBounds()) && !playerdamaged)
+            if (checkCollision(player.GetGlobalBounds(), bigAsteroids[i].GetGlobalBounds()) && !playerdamaged)
             {
                 player.life--;
                 playerdamaged = true;
@@ -374,7 +374,7 @@ void GameScreen::UpdateGame(float dt)
 
         for (int i = 0; i < totalMidMeteorsCount; i++)
         {
-            if (checkCollision(player.getGlobalBounds(), midAsteroids[i].getGlobalBounds()) && !playerdamaged)
+            if (checkCollision(player.GetGlobalBounds(), midAsteroids[i].GetGlobalBounds()) && !playerdamaged)
             {
                 player.life--;
                 playerdamaged = true;
@@ -385,7 +385,7 @@ void GameScreen::UpdateGame(float dt)
 
         for (int i = 0; i < totalSmallMeteorsCount; i++)
         {
-            if (checkCollision(player.getGlobalBounds(), smallAsteroids[i].getGlobalBounds()) && !playerdamaged)
+            if (checkCollision(player.GetGlobalBounds(), smallAsteroids[i].GetGlobalBounds()) && !playerdamaged)
             {
                 player.life--;
                 playerdamaged = true;
@@ -431,32 +431,32 @@ void GameScreen::DrawGame(sf::RenderWindow& window)
     for (int i = 0; i < totalBigMeteorsCount; i++)
     {
         if (bigAsteroids[i].isActive)
-            bigAsteroids[i].draw(window);
+            bigAsteroids[i].Draw(window);
 
     }
 
     for (int i = 0; i < totalMidMeteorsCount; i++)
     {
         if (midAsteroids[i].isActive)
-            midAsteroids[i].draw(window);
+            midAsteroids[i].Draw(window);
     }
 
     for (int i = 0; i < totalSmallMeteorsCount; i++)
     {
         if (smallAsteroids[i].isActive)
-            smallAsteroids[i].draw(window);
+            smallAsteroids[i].Draw(window);
     }
 
     for (int i = 0; i < maxBullets; i++)
     {
-        if (bullet[i].isActive) bullet[i].draw(window);
+        if (bullet[i].isActive) bullet[i].Draw(window);
     }
     
     if (playerdamaged)
     {
         if (playerBlinkTimer <= totalPlayerBlinkTime)
         {
-            player.draw(window);
+            player.Draw(window);
         }
         else
         {
@@ -465,7 +465,7 @@ void GameScreen::DrawGame(sf::RenderWindow& window)
     }
     else
     {
-        player.draw(window);
+        player.Draw(window);
     }
    
 }

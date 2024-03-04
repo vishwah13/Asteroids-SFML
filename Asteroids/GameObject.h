@@ -8,15 +8,15 @@ public:
 	GameObject(sf::Texture& texture, const sf::Vector2f& position = sf::Vector2f(0.0f, 0.0f)); /*: m_position(position), m_rotation(0.0f)*/
 	
 	virtual ~GameObject();
-	sf::FloatRect getGlobalBounds() const;
+	sf::FloatRect GetGlobalBounds() const;
 	virtual void SetTexture(sf::Texture& texture);
 	void SetColor(sf::Color color);
 	void WrapGameObject(int width,int height);
-	void draw(sf::RenderWindow& window);
+	void Draw(sf::RenderWindow& window);
 
-	sf::Sprite getSprite();
+	sf::Sprite GetSprite();
 protected:
-	sf::Sprite m_sprite;
+	sf::Sprite sprite;
 
 public:
 	bool isActive;

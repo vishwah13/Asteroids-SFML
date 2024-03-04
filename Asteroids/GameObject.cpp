@@ -3,14 +3,14 @@
 GameObject::GameObject(const sf::Vector2f& position)
 {
     setPosition(position);
-    m_sprite.setPosition(position);
+    sprite.setPosition(position);
 }
 
 GameObject::GameObject(sf::Texture& texture, const sf::Vector2f& position)
 {
-    m_sprite.setTexture(texture);
+    sprite.setTexture(texture);
     setPosition(position);
-    m_sprite.setPosition(position);
+    sprite.setPosition(position);
 }
 
 GameObject::~GameObject()
@@ -18,21 +18,21 @@ GameObject::~GameObject()
 
 }
 
-sf::FloatRect GameObject::getGlobalBounds() const
+sf::FloatRect GameObject::GetGlobalBounds() const
 {
-	return getTransform().transformRect(m_sprite.getGlobalBounds());
+	return getTransform().transformRect(sprite.getGlobalBounds());
 }
 
 void GameObject::SetTexture(sf::Texture& texture)
 {
-    m_sprite.setTexture(texture);
+    sprite.setTexture(texture);
     //needed to be sperated from this function
-    m_sprite.setOrigin(m_sprite.getGlobalBounds().width * 0.5f, m_sprite.getGlobalBounds().height * 0.5f);
+    sprite.setOrigin(sprite.getGlobalBounds().width * 0.5f, sprite.getGlobalBounds().height * 0.5f);
 }
 
 void GameObject::SetColor(sf::Color color)
 {
-    m_sprite.setColor(color);
+    sprite.setColor(color);
 }
 
 void GameObject::WrapGameObject(int width, int height)
@@ -40,20 +40,20 @@ void GameObject::WrapGameObject(int width, int height)
     if (isActive)
     {
         //setPosition(getPosition().x + speed.x, getPosition().y + speed.y);
-        if (getPosition().x > width + getGlobalBounds().height) setPosition(-(getGlobalBounds().height), getPosition().y);
-        else if (getPosition().x < -(getGlobalBounds().height)) setPosition(width + getGlobalBounds().height, getPosition().y);
-        if (getPosition().y > (height + getGlobalBounds().height)) setPosition(getPosition().x, -(getGlobalBounds().height));
-        else if (getPosition().y < -(getGlobalBounds().height)) setPosition(getPosition().x, height + getGlobalBounds().height);
+        if (getPosition().x > width + GetGlobalBounds().height) setPosition(-(GetGlobalBounds().height), getPosition().y);
+        else if (getPosition().x < -(GetGlobalBounds().height)) setPosition(width + GetGlobalBounds().height, getPosition().y);
+        if (getPosition().y > (height + GetGlobalBounds().height)) setPosition(getPosition().x, -(GetGlobalBounds().height));
+        else if (getPosition().y < -(GetGlobalBounds().height)) setPosition(getPosition().x, height + GetGlobalBounds().height);
     }
 }
 
-void GameObject::draw(sf::RenderWindow& window)
+void GameObject::Draw(sf::RenderWindow& window)
 {
 	sf::Transform transform = getTransform();
-	window.draw(m_sprite, transform);
+	window.draw(sprite, transform);
 }
 
-sf::Sprite GameObject::getSprite()
+sf::Sprite GameObject::GetSprite()
 {
-	return m_sprite;
+	return sprite;
 }
