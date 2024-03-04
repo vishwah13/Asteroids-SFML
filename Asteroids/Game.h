@@ -29,7 +29,14 @@ public:
 	int midMeteorsCount = 0;
 	int smallMeteorsCount = 0;
 	int destroyedMeteorsCount = 0;
+	int totalBigMeteorsCount = 0;
+	int totalMidMeteorsCount = 0;
+	int totalSmallMeteorsCount = 0;
+	int meteorsSpeed = 0;
 
+	int maxPlayerLife = 0;
+	int maxBullets = 0;
+	float playerSpeed = 0;
 	float rotationSpeed = 150.0f;
 	float timeToFire = 0.5f;
 	float fireTime = 0.0f;

@@ -14,10 +14,20 @@ GameScreen::~GameScreen()
 void GameScreen::StartGame() 
 {
     //Initializing the game
+    std::unordered_map<std::string, int> params = gameAssets.getGameParams();
+
     rotationSpeed = 150.0f;
     timeToFire = 0.5f;
     totalGraceTime = 3.0f;
     totalPlayerBlinkTime = 0.5f;
+    totalBigMeteorsCount = params["MAX_BIG_METEORS "];
+    totalMidMeteorsCount = params["MAX_MEDIUM_METEORS "];
+    totalSmallMeteorsCount = params["MAX_SMALL_METEORS "];
+    meteorsSpeed = params["METEORS_SPEED "];
+    maxPlayerLife = params["MAX_PLAYER_LIFE "];
+    maxBullets = params["MAX_BULLET "];
+    playerSpeed = params["PLAYER_SPEED "];
+
 
     gameOver = false;
     victory = false;
@@ -28,8 +38,8 @@ void GameScreen::StartGame()
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> randPosX(SCREEN_WIDTH, SCREEN_WIDTH + 100);
     std::uniform_int_distribution<> randPosY(SCREEN_HIGHT, SCREEN_HIGHT + 100);
-    std::uniform_int_distribution<> randVelX(-METEORS_SPEED, METEORS_SPEED);
-    std::uniform_int_distribution<> randVelY(-METEORS_SPEED, METEORS_SPEED);
+    std::uniform_int_distribution<> randVelX(-meteorsSpeed, meteorsSpeed);
+    std::uniform_int_distribution<> randVelY(-meteorsSpeed, meteorsSpeed);
 
     
 
@@ -48,22 +58,22 @@ void GameScreen::StartGame()
 
    
     player.SetTexture(gameAssets.getPlayerTexture());
-    player.life = MAX_PLAYER_LIFE;
+    player.life = maxPlayerLife;
     player.setPosition(sf::Vector2f(400, 400));
 
-    for (int i = 0; i < MAX_BULLET; i++)
+    for (int i = 0; i < maxBullets; i++)
         bullet.push_back({ gameAssets.getAsteroidsTexture()});
 
 
-    for (int i = 0; i < MAX_BIG_METEORS; i++)
+    for (int i = 0; i < totalBigMeteorsCount; i++)
         bigAsteroids.push_back({ gameAssets.getAsteroidsTexture() });
 
 
-    for (int i = 0; i < MAX_MEDIUM_METEORS; i++)
+    for (int i = 0; i < totalMidMeteorsCount; i++)
         midAsteroids.push_back({ gameAssets.getAsteroidsTexture() });
 
 
-    for (int i = 0; i < MAX_SMALL_METEORS; i++)
+    for (int i = 0; i < totalSmallMeteorsCount; i++)
         smallAsteroids.push_back({ gameAssets.getAsteroidsTexture() });
 
 
@@ -71,7 +81,7 @@ void GameScreen::StartGame()
     int velx, vely;
 
 
-    for (int i = 0; i < MAX_BULLET; i++)
+    for (int i = 0; i < maxBullets; i++)
     {
         bullet[i].setScale(0.1f, 0.1f);
         bullet[i].isActive = false;
@@ -80,7 +90,7 @@ void GameScreen::StartGame()
         bullet[i].lifeSpane = 0;
     }
 
-    for (int i = 0; i < MAX_BIG_METEORS; i++)
+    for (int i = 0; i < totalBigMeteorsCount; i++)
     {
         posx = randPosX(gen);
         posy = randPosY(gen);
@@ -104,7 +114,7 @@ void GameScreen::StartGame()
 
     }
 
-    for (int i = 0; i < MAX_MEDIUM_METEORS; i++)
+    for (int i = 0; i < totalMidMeteorsCount; i++)
     {
         midAsteroids[i].setPosition(sf::Vector2f(-100, 100));
         midAsteroids[i].Speed = sf::Vector2f(0.0f, 0.0f);
@@ -112,7 +122,7 @@ void GameScreen::StartGame()
         midAsteroids[i].isActive = false;
     }
 
-    for (int i = 0; i < MAX_SMALL_METEORS; i++)
+    for (int i = 0; i < totalSmallMeteorsCount; i++)
     {
         smallAsteroids[i].setPosition(sf::Vector2f(-100, 100));
         smallAsteroids[i].Speed = sf::Vector2f(0.0f, 0.0f);
@@ -138,8 +148,8 @@ void GameScreen::UpdateGame(float dt)
         player.rotate(rotationSpeed * dt);
     }
 
-    player.playerSpeed.x = sin(player.getRotation() * static_cast<float>(PI) / 180.0f) * PLAYER_SPEED;
-    player.playerSpeed.y = cos(player.getRotation() * static_cast<float>(PI) / 180.0f) * PLAYER_SPEED;
+    player.playerSpeed.x = sin(player.getRotation() * static_cast<float>(PI) / 180.0f) * playerSpeed;
+    player.playerSpeed.y = cos(player.getRotation() * static_cast<float>(PI) / 180.0f) * playerSpeed;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
@@ -159,7 +169,7 @@ void GameScreen::UpdateGame(float dt)
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
     {
         fireTime += dt;
-        for (int i = 0; i < MAX_BULLET; i++)
+        for (int i = 0; i < maxBullets; i++)
         {
             if (!bullet[i].isActive && fireTime >= timeToFire)
             {
@@ -168,8 +178,8 @@ void GameScreen::UpdateGame(float dt)
                 //bullet[i].setPosition((player.getPosition().x + player.getGlobalBounds().width / 2 + offsetX), player.getPosition().y + offsetY);
                 bullet[i].setPosition(player.getPosition().x + offsetX, player.getPosition().y + offsetY);
                 bullet[i].isActive = true;
-                bullet[i].speed.x = 1.5 * sin(player.getRotation() * static_cast<float>(PI) / 180.0f) * (PLAYER_SPEED);
-                bullet[i].speed.y = 1.5 * cos(player.getRotation() * static_cast<float>(PI) / 180.0f) * (PLAYER_SPEED);
+                bullet[i].speed.x = 1.5 * sin(player.getRotation() * static_cast<float>(PI) / 180.0f) * (playerSpeed);
+                bullet[i].speed.y = 1.5 * cos(player.getRotation() * static_cast<float>(PI) / 180.0f) * (playerSpeed);
                 bullet[i].setRotation(player.getRotation());
                 fireTime = 0.0f;
                 break;
@@ -196,7 +206,7 @@ void GameScreen::UpdateGame(float dt)
     player.setPosition(movement);
 
 
-    for (int i = 0; i < MAX_BULLET; i++)
+    for (int i = 0; i < maxBullets; i++)
     {
         if (bullet[i].isActive)
         {
@@ -204,7 +214,7 @@ void GameScreen::UpdateGame(float dt)
         }
     }
 
-    for (int i = 0; i < MAX_BULLET; i++)
+    for (int i = 0; i < maxBullets; i++)
     {
         if (bullet[i].isActive)
         {
@@ -242,30 +252,30 @@ void GameScreen::UpdateGame(float dt)
         }
     }
 
-    for (int i = 0; i < MAX_BIG_METEORS; i++)
+    for (int i = 0; i < totalBigMeteorsCount; i++)
     {
         bigAsteroids[i].setPosition(bigAsteroids[i].getPosition().x + bigAsteroids[i].Speed.x, bigAsteroids[i].getPosition().y + bigAsteroids[i].Speed.y);
         bigAsteroids[i].WrapGameObject(SCREEN_WIDTH, SCREEN_HIGHT);
     }
 
-    for (int i = 0; i < MAX_MEDIUM_METEORS; i++)
+    for (int i = 0; i < totalMidMeteorsCount; i++)
     {
         midAsteroids[i].setPosition(midAsteroids[i].getPosition().x + midAsteroids[i].Speed.x, midAsteroids[i].getPosition().y + midAsteroids[i].Speed.y);
         midAsteroids[i].WrapGameObject(SCREEN_WIDTH, SCREEN_HIGHT);
     }
 
-    for (int i = 0; i < MAX_SMALL_METEORS; i++)
+    for (int i = 0; i < totalSmallMeteorsCount; i++)
     {
         smallAsteroids[i].setPosition(smallAsteroids[i].getPosition().x + smallAsteroids[i].Speed.x, smallAsteroids[i].getPosition().y + smallAsteroids[i].Speed.y);
         smallAsteroids[i].WrapGameObject(SCREEN_WIDTH, SCREEN_HIGHT);
     }
 
     //check for bullet vs Asteroids collision
-    for (int i = 0; i < MAX_BULLET; i++)
+    for (int i = 0; i < maxBullets; i++)
     {
         if (bullet[i].isActive)
         {
-            for (int a = 0; a < MAX_BIG_METEORS; a++)
+            for (int a = 0; a < totalBigMeteorsCount; a++)
             {
                 if (bigAsteroids[a].isActive && checkCollision(bullet[i].getGlobalBounds(), bigAsteroids[a].getGlobalBounds()))
                 {
@@ -279,12 +289,12 @@ void GameScreen::UpdateGame(float dt)
                         if (midMeteorsCount % 2 == 0)
                         {
                             midAsteroids[midMeteorsCount].setPosition(bigAsteroids[a].getPosition());
-                            midAsteroids[midMeteorsCount].Speed = sf::Vector2f(cos(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED * -1, sin(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED * -1);
+                            midAsteroids[midMeteorsCount].Speed = sf::Vector2f(cos(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * meteorsSpeed * -1, sin(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * meteorsSpeed * -1);
                         }
                         else
                         {
                             midAsteroids[midMeteorsCount].setPosition(bigAsteroids[a].getPosition());
-                            midAsteroids[midMeteorsCount].Speed = sf::Vector2f(cos(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED, sin(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED);
+                            midAsteroids[midMeteorsCount].Speed = sf::Vector2f(cos(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * meteorsSpeed, sin(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * meteorsSpeed);
                         }
 
                        
@@ -295,11 +305,11 @@ void GameScreen::UpdateGame(float dt)
                     }
                     //to fix a weird collision error
                     bigAsteroids[a].setPosition(-1000, -1000);
-                    a = MAX_BIG_METEORS;
+                    a = totalBigMeteorsCount;
                 }
             }
             //check collsion for breaking medium to small
-            for (int b = 0; b < MAX_MEDIUM_METEORS; b++)
+            for (int b = 0; b < totalMidMeteorsCount; b++)
             {
                 if (midAsteroids[b].isActive && checkCollision(bullet[i].getGlobalBounds(), midAsteroids[b].getGlobalBounds()))
                 {
@@ -314,12 +324,12 @@ void GameScreen::UpdateGame(float dt)
                         if (smallMeteorsCount % 2 == 0)
                         {
                             smallAsteroids[smallMeteorsCount].setPosition(midAsteroids[b].getPosition());
-                            smallAsteroids[smallMeteorsCount].Speed = sf::Vector2f(cos(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED * -1, sin(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED * -1);
+                            smallAsteroids[smallMeteorsCount].Speed = sf::Vector2f(cos(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * meteorsSpeed * -1, sin(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * meteorsSpeed * -1);
                         }
                         else
                         {
                             smallAsteroids[smallMeteorsCount].setPosition(midAsteroids[b].getPosition());
-                            smallAsteroids[smallMeteorsCount].Speed = sf::Vector2f(cos(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED, sin(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * METEORS_SPEED);
+                            smallAsteroids[smallMeteorsCount].Speed = sf::Vector2f(cos(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * meteorsSpeed, sin(bullet[i].getRotation() * static_cast<float>(PI) / 180.0f) * meteorsSpeed);
                         }
 
                        
@@ -329,10 +339,10 @@ void GameScreen::UpdateGame(float dt)
                       
                     }
                     midAsteroids[b].setPosition(-1000, -1000);
-                    b = MAX_MEDIUM_METEORS;
+                    b = totalMidMeteorsCount;
                 }
             }
-            for (int c = 0; c < MAX_SMALL_METEORS; c++)
+            for (int c = 0; c < totalSmallMeteorsCount; c++)
             {
                 if (smallAsteroids[c].isActive && checkCollision(bullet[i].getGlobalBounds(), smallAsteroids[c].getGlobalBounds()))
                 {
@@ -341,7 +351,7 @@ void GameScreen::UpdateGame(float dt)
                     smallAsteroids[c].isActive = false;
                     destroyedMeteorsCount++;
                     smallAsteroids[c].setPosition(-1000, -1000);
-                    c = MAX_SMALL_METEORS;
+                    c = totalSmallMeteorsCount;
                 }
             }
         }
@@ -350,7 +360,7 @@ void GameScreen::UpdateGame(float dt)
     //player vs Asteroids collision
     if (!playerdamaged)
     {
-        for (int i = 0; i < MAX_BIG_METEORS; i++)
+        for (int i = 0; i < totalBigMeteorsCount; i++)
         {
             if (checkCollision(player.getGlobalBounds(), bigAsteroids[i].getGlobalBounds()) && !playerdamaged)
             {
@@ -361,7 +371,7 @@ void GameScreen::UpdateGame(float dt)
             }
         }
 
-        for (int i = 0; i < MAX_MEDIUM_METEORS; i++)
+        for (int i = 0; i < totalMidMeteorsCount; i++)
         {
             if (checkCollision(player.getGlobalBounds(), midAsteroids[i].getGlobalBounds()) && !playerdamaged)
             {
@@ -372,7 +382,7 @@ void GameScreen::UpdateGame(float dt)
             }
         }
 
-        for (int i = 0; i < MAX_SMALL_METEORS; i++)
+        for (int i = 0; i < totalSmallMeteorsCount; i++)
         {
             if (checkCollision(player.getGlobalBounds(), smallAsteroids[i].getGlobalBounds()) && !playerdamaged)
             {
@@ -395,7 +405,7 @@ void GameScreen::UpdateGame(float dt)
         graceTimer = 0;
     }
 
-    if (destroyedMeteorsCount == MAX_BIG_METEORS + MAX_MEDIUM_METEORS + MAX_SMALL_METEORS) {
+    if (destroyedMeteorsCount == totalBigMeteorsCount + totalMidMeteorsCount + totalSmallMeteorsCount) {
         victory = true;
     }
 
@@ -417,26 +427,26 @@ void GameScreen::DrawGame(sf::RenderWindow& window)
     window.draw(scoreText);
 
 
-    for (int i = 0; i < MAX_BIG_METEORS; i++)
+    for (int i = 0; i < totalBigMeteorsCount; i++)
     {
         if (bigAsteroids[i].isActive)
             bigAsteroids[i].draw(window);
 
     }
 
-    for (int i = 0; i < MAX_MEDIUM_METEORS; i++)
+    for (int i = 0; i < totalMidMeteorsCount; i++)
     {
         if (midAsteroids[i].isActive)
             midAsteroids[i].draw(window);
     }
 
-    for (int i = 0; i < MAX_SMALL_METEORS; i++)
+    for (int i = 0; i < totalSmallMeteorsCount; i++)
     {
         if (smallAsteroids[i].isActive)
             smallAsteroids[i].draw(window);
     }
 
-    for (int i = 0; i < MAX_BULLET; i++)
+    for (int i = 0; i < maxBullets; i++)
     {
         if (bullet[i].isActive) bullet[i].draw(window);
     }
