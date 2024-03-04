@@ -36,6 +36,8 @@ public:
 	float graceTimer = 0.0f;
 	float totalGraceTime = 3.0f;
 	bool playerdamaged = false;
+	float playerBlinkTimer = 0.0f;
+	float totalPlayerBlinkTime = 0.5f;
 
 	sf::Text welcomeText;
 	sf::Text gameOverText;

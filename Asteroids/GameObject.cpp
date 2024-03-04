@@ -30,6 +30,11 @@ void GameObject::SetTexture(sf::Texture& texture)
     m_sprite.setOrigin(m_sprite.getGlobalBounds().width * 0.5f, m_sprite.getGlobalBounds().height * 0.5f);
 }
 
+void GameObject::SetColor(sf::Color color)
+{
+    m_sprite.setColor(color);
+}
+
 void GameObject::WrapGameObject(int width, int height)
 {
     if (isActive)

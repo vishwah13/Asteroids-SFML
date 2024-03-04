@@ -10,6 +10,7 @@ public:
 	virtual ~GameObject();
 	sf::FloatRect getGlobalBounds() const;
 	virtual void SetTexture(sf::Texture& texture);
+	void SetColor(sf::Color color);
 	void WrapGameObject(int width,int height);
 	void draw(sf::RenderWindow& window);
 

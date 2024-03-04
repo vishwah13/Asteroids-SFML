@@ -13,6 +13,17 @@ GameScreen::~GameScreen()
 
 void GameScreen::StartGame() 
 {
+    //Initializing the game
+    rotationSpeed = 150.0f;
+    timeToFire = 0.5f;
+    totalGraceTime = 3.0f;
+    totalPlayerBlinkTime = 0.5f;
+
+    gameOver = false;
+    victory = false;
+    pause = false;
+    destroyedMeteorsCount = 0;
+
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> randPosX(SCREEN_WIDTH, SCREEN_WIDTH + 100);
@@ -35,18 +46,10 @@ void GameScreen::StartGame()
 
 
 
-    //Initializing the game
-    gameOver = false;
-    victory = false;
-    pause = false;
-    destroyedMeteorsCount = 0;
-    //Player player(PlayerTexture);
+   
     player.SetTexture(gameAssets.getPlayerTexture());
     player.life = MAX_PLAYER_LIFE;
     player.setPosition(sf::Vector2f(400, 400));
-
-    //bullet stuff
-    //Bullet bullet(AsteroidTexture);
 
     for (int i = 0; i < MAX_BULLET; i++)
         bullet.push_back({ gameAssets.getAsteroidsTexture()});
@@ -120,7 +123,6 @@ void GameScreen::StartGame()
 
 void GameScreen::UpdateGame(float dt)  
 {
-    if (gameOver) return;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) pause = !pause;
 
@@ -402,11 +404,15 @@ void GameScreen::UpdateGame(float dt)
     //Update UI
     lifeText.setString("Life: " + std::to_string(player.life));
     scoreText.setString("Score: " + std::to_string(destroyedMeteorsCount));
+
+    if(playerdamaged)
+        playerBlinkTimer += dt;
+   
+
 }
 
 void GameScreen::DrawGame(sf::RenderWindow& window)
 {
-    if (gameOver) return;
     window.draw(lifeText);
     window.draw(scoreText);
 
@@ -434,7 +440,23 @@ void GameScreen::DrawGame(sf::RenderWindow& window)
     {
         if (bullet[i].isActive) bullet[i].draw(window);
     }
-    player.draw(window);
+    
+    if (playerdamaged)
+    {
+        if (playerBlinkTimer <= totalPlayerBlinkTime)
+        {
+            player.draw(window);
+        }
+        else
+        {
+            playerBlinkTimer = 0;
+        }
+    }
+    else
+    {
+        player.draw(window);
+    }
+   
 }
 
 bool GameScreen::checkCollision(sf::FloatRect object1, const sf::FloatRect object2)
